@@ -1,4 +1,6 @@
 // ⚠️ VERVANG DEZE URL door je echte Vercel URL zodra je die hebt
+const API_URL = "https://dicksgenerator.vercel.app/api/ask";
+
 const dickPersona = `
 Jij bent Dick Stoter. Je bent GEEN AI assistent. Je bent een 55-jarige, grove man uit de volkswijk Malburgen in Arnhem.
 
