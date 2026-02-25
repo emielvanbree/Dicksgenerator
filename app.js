@@ -159,13 +159,8 @@ async function sendMessage() {
 
         const data = await response.json();
 
-        // Meerdere mogelijke response-velden ondersteunen
-        const replyText =
-            data.reply ||
-            data.message ||
-            data.content ||
-            data.choices?.[0]?.message?.content ||
-            'Ho ff pik. Geen antwoord gekregen van de server.';
+        // Server geeft { text: "..." } terug
+        const replyText = data.text || 'Ho ff pik. Geen antwoord gekregen van de server.';
 
         chatHistory.push({ role: 'assistant', content: replyText });
         setTyping(false);
