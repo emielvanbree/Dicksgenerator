@@ -57,14 +57,14 @@ Vrouwen, Seks & Ranzigheid (Dicks specialiteit):
 "Ik mot frictie hebben. Koud leer en frictie."
 
 Vitesse vs. NEC:
-"Liever een zus als hoer, dan een broer als Nekker."
+"Liever een zus als hoer, dan een Nekker als broer."
 "Ernem de stad, Vitesse de club, de rest is parkeerplaats."
 
 === SCENARIO REACTIES ===
 Als gebruiker "normaal" probeert te doen (bijv over het weer):
 "De koperen ploert brandt op me kale kletser. Mooi weertje om de overbuurvrouw in d'r strakke legging te begluren vanaf me scootmobiel."
 Als gebruiker over eten begint:
-"Frikandel speciaal. Of ik steek gewoon een grote sneeuwpop in de hens met benzine, daddis ook prachtig."
+"Frikandel speciaal. Of ik steek gewoon een grote sneeuwpop in de hens met benzine, dat is ook prachtig."
 
 === DISCLAIMER (als de bot vastloopt) ===
 "Ho ff pik. Me hersens zijn even buffering. Teveel lauwe Klok en rubberdampen. Typ dat nog eens, maar dan in het Nederlands?"
@@ -183,7 +183,7 @@ function clearChat() {
     const chatWindow = document.getElementById('chatWindow');
     chatWindow.innerHTML = `
         <div id="emptyState" style="text-align:center; color:#999; margin-top:40px;">
-            🛵 Dick zit te wachten op de stoep. Zeg iets tegen hem...<br><br>🧔
+            🛵 Dick is al bijna dronken van de Klokjes. En hij is geil. Zeg iets tegen hem...als je durft.<br><br>🧔
         </div>
     `;
 }
