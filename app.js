@@ -346,12 +346,10 @@ INSTRUCTIE: Reageer nu op de gebruiker hieronder. Blijf 100% in je rol als Dick 
 (function buildDOM() {
   document.documentElement.lang = 'nl';
 
-  // Animated bg canvas (zelfde als index)
   const bgCanvas = document.createElement('canvas');
   bgCanvas.id = 'bg-canvas';
   document.body.appendChild(bgCanvas);
 
-  // App shell
   const app = document.createElement('div');
   app.id = 'dick-app';
   app.innerHTML = `
@@ -363,7 +361,7 @@ INSTRUCTIE: Reageer nu op de gebruiker hieronder. Blijf 100% in je rol als Dick 
           <div id="dick-status">online (en chagrijnig)</div>
         </div>
       </div>
-      <button id="btn-clear" onclick="clearChat()">🗑 Reset</button>
+      <button id="btn-clear">🗑 Reset</button>
     </div>
 
     <div id="chatWindow">
@@ -373,35 +371,25 @@ INSTRUCTIE: Reageer nu op de gebruiker hieronder. Blijf 100% in je rol als Dick 
         En hij is geil.<br><br>
         <strong>Zeg iets tegen hem... als je durft.</strong>
       </div>
-    </div>
-
-    <div id="typingRow">
-      <div class="msg-avatar">🧔</div>
-      <div class="typing-bubble">
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
+      <div id="typingRow" style="display:none; align-items:flex-end; gap:8px; margin-bottom:10px;">
+        <div class="msg-avatar">🧔</div>
+        <div class="typing-bubble">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
       </div>
     </div>
 
     <div id="dick-input-bar">
       <textarea id="userInput" placeholder="Typ iets tegen Dick..." rows="1"></textarea>
-      <button id="sendBtn" onclick="sendMessage()" title="Verstuur">🍺</button>
+      <button id="sendBtn" title="Verstuur">🍺</button>
     </div>
   `;
   document.body.appendChild(app);
 
-  // Event listeners opnieuw koppelen na DOM-build
-  document.getElementById('userInput').addEventListener('input', function () {
-    this.style.height = '46px';
-    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-  });
-  document.getElementById('userInput').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
+  // Koppel events nadat de DOM bestaat
+  wireEvents();
 })();
 
 // ─── Animated background (zelfde skyline als index) ───────────────────────────
@@ -527,7 +515,13 @@ function addMessageToUI(role, text) {
   }
 
   row.appendChild(bubble);
-  chatWindow.appendChild(row);
+  // Insert before typingRow if it exists inside chatWindow
+  const typingRow = document.getElementById('typingRow');
+  if (typingRow && typingRow.parentNode === chatWindow) {
+    chatWindow.insertBefore(row, typingRow);
+  } else {
+    chatWindow.appendChild(row);
+  }
   scrollToBottom();
 }
 
@@ -535,15 +529,8 @@ function addMessageToUI(role, text) {
 
 function setTyping(visible) {
   const typingRow = document.getElementById('typingRow');
-  const chatWindow = document.getElementById('chatWindow');
-  if (!typingRow || !chatWindow) return;
-  // Verplaats typingRow naar chatWindow zodat hij in de flow zit
-  if (visible) {
-    chatWindow.appendChild(typingRow);
-    typingRow.style.display = 'flex';
-  } else {
-    typingRow.style.display = 'none';
-  }
+  if (!typingRow) return;
+  typingRow.style.display = visible ? 'flex' : 'none';
   scrollToBottom();
 }
 
@@ -552,6 +539,7 @@ function setTyping(visible) {
 async function sendMessage() {
   const input   = document.getElementById('userInput');
   const sendBtn = document.getElementById('sendBtn');
+  if (!input || !sendBtn) return;
   const userText = input.value.trim();
   if (!userText) return;
 
@@ -586,7 +574,7 @@ async function sendMessage() {
   }
 
   sendBtn.disabled = false;
-  if (input) input.focus();
+  input.focus();
 }
 
 // ─── Chat resetten ────────────────────────────────────────────────────────────
@@ -595,6 +583,8 @@ function clearChat() {
   chatHistory = [];
   const chatWindow = document.getElementById('chatWindow');
   if (!chatWindow) return;
+  // Bewaar typingRow
+  const typingRow = document.getElementById('typingRow');
   chatWindow.innerHTML = `
     <div id="emptyState">
       <span class="empty-icon">🛵</span>
@@ -603,7 +593,29 @@ function clearChat() {
       <strong>Zeg iets tegen hem... als je durft.</strong>
     </div>
   `;
-  // Typing row opnieuw toevoegen
-  const typingRow = document.getElementById('typingRow');
   if (typingRow) chatWindow.appendChild(typingRow);
+}
+
+// ─── Event listeners koppelen na DOM-build ────────────────────────────────────
+
+function wireEvents() {
+  const input   = document.getElementById('userInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const clearBtn = document.getElementById('btn-clear');
+
+  if (sendBtn)  sendBtn.addEventListener('click', sendMessage);
+  if (clearBtn) clearBtn.addEventListener('click', clearChat);
+
+  if (input) {
+    input.addEventListener('input', function () {
+      this.style.height = '46px';
+      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  }
 }
